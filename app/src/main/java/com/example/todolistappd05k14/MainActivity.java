@@ -15,10 +15,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private ListView lvTodos;
-    private List<String> dataSource;
-    private ArrayAdapter<String> adapter;
+    private List<Todo> dataSource;
 
     private TodoDialog todoDialog = null;
+    private TodoAdapter todoAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +27,12 @@ public class MainActivity extends AppCompatActivity {
         lvTodos = findViewById(R.id.lv_todos);
         // Thu hien thi du lieu co dinh listview
         dataSource = new ArrayList<>();
-        dataSource.add("1. Học bài");
-        dataSource.add("2. Đi chợ");
+        dataSource.add(new Todo("1. Đi hoc", true));
+        dataSource.add(new Todo("2. Đi chợ"));
         // Hien thi len listview thong qua adapter
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataSource);
-        lvTodos.setAdapter(adapter);
+        todoAdapter = new TodoAdapter(this, dataSource);
+        lvTodos.setAdapter(todoAdapter);
+
 
         // Nhan giu den xoa
         lvTodos.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(MainActivity.this, "Xoa thanh cong",Toast.LENGTH_SHORT).show();
                 dataSource.remove(position);
-                adapter.notifyDataSetChanged();
+
                 return false;
             }
         });
@@ -51,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
             todoDialog = new TodoDialog(this) {
                 @Override
                 public void getTodo(String todo) {
-                    dataSource.add(todo);
-                    adapter.notifyDataSetChanged();
+                    dataSource.add(new Todo(todo));
+                    todoAdapter.notifyDataSetChanged();
                 }
             };
         }
